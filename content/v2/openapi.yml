@@ -3745,6 +3745,9 @@ components:
         idn:
           type: boolean
           description: true if the suffix supports Internationalized Domain Names (IDN).
+        minimum_registration:
+          type: integer
+          description: The minimum registration period, in years.
         registration_enabled:
           type: boolean
           description: true if DNSimple supports registrations for this TLD.
