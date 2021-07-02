@@ -281,6 +281,10 @@ There is a limit to the number of requests that you can perform per hour.
 - For **authenticated requests** you can make **up to 2400 requests per hour**.
 - For **unauthenticated requests**, you can make **up to 30 requests per hour**.
 
+<note>
+  Individual endpoints can also have a separate rate limit. Such limits are made known in the endpoint's documentation.
+</note>
+
 You can see your current rate limit status by checking the HTTP headers of any API request:
 
 ~~~

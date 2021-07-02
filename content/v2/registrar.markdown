@@ -17,6 +17,10 @@ Checks a domain name for availability.
 GET /:account/registrar/domains/:domain/check
 ~~~
 
+<note>
+  For this endpoint you can make **up to 60 requests per hour**. If you need to increase the limits [please reach out to us](https://dnsimple.com/contact).
+</note>
+
 ### Parameters
 
 Name | Type | Description
