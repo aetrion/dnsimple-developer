@@ -37,6 +37,7 @@ tags:
   - name: identity
   - name: tlds
   - name: vanity name servers
+  - name: secondary dns
   - name: templates
   - name: webhooks
   - name: zones
@@ -121,6 +122,13 @@ paths:
       description: Creates a domain and the corresponding zone into the account.
       parameters:
         - $ref: '#/components/parameters/Account'
+        - in: query
+          schema:
+            type: string
+          name: name
+          required: true
+          description: The domain's name to be added.
+          example: example.com
       operationId: createDomain
       tags:
         - domains
@@ -690,6 +698,35 @@ paths:
       parameters:
         - $ref: '#/components/parameters/Account'
         - $ref: '#/components/parameters/Domain'
+        - in: query
+          schema:
+            type: integer
+          name: contact_id
+          required: true
+          description: The ID of an existing contact in your account.
+        - in: query
+          schema:
+            type: boolean
+            default: false
+          name: auto_renew
+          description: Set to true to enable the auto-renewal of the certificate.
+        - in: query
+          schema:
+            type: string
+          name: name
+          description: The certificate name.
+        - in: query
+          schema:
+            type: array
+            default: []
+            items:
+              type: string
+          name: alternate_names
+          description: The certificate _alternate names_
+          examples:
+            multipleSAN:
+              summary: Multiple SAN
+              value: ["docs.example.com", "status.example.com"]
       operationId: purchaseLetsencryptCertificate
       tags:
         - domain certificates
@@ -741,6 +778,12 @@ paths:
         - $ref: '#/components/parameters/Account'
         - $ref: '#/components/parameters/Domain'
         - $ref: '#/components/parameters/Certificate'
+        - in: query
+          schema:
+            type: boolean
+            default: false
+          name: auto_renew
+          description: Set to true to enable the auto-renewal of the certificate.
       operationId: purchaseRenewalLetsencryptCertificate
       tags:
         - domain certificates
@@ -2625,15 +2668,13 @@ components:
       example: '2010-01-01T01:00:00Z'
       description: A date-time value formatted as ISO 8601.
     NullableDate:
-      type:
-        - string
-        - 'null'
+      type: string
+      nullable: true
       format: date
       description: 'A nullable date-time value. The value can be null, when present the value is formatted according to the ISO 8601 specification.'
     NullableDateTime:
-      type:
-        - string
-        - 'null'
+      type: string
+      nullable: true
       format: date-time
       description: 'A nullable date-time value. The value can be null, when present the value is formatted according to the ISO 8601 specification.'
     Error:
@@ -4012,17 +4053,15 @@ components:
           type: string
           description: A human-readable description of the one-click service
         setup_description:
-          type:
-            - string
-            - 'null'
+          type: string
+          nullable: true
           description: Describes setup requirements
         requires_setup:
           type: boolean
           description: Flag indicating whether setup is required
         default_subdomain:
-          type:
-            - string
-            - 'null'
+          type: string
+          nullable: true
           description: The default subdomain used when creating DNS records
         created_at:
           $ref: '#/components/schemas/DateTime'
@@ -4533,7 +4572,9 @@ components:
           type: boolean
           description: 'Returns true for a secondary zone, false for a primary zone.'
         last_transferred_at:
-          $ref: '#/components/schemas/DateTime'
+          type: string
+          format: date-time
+          example: '2010-01-01T01:00:00Z'
           description: 'Returns the date the zone was last transferred. Used if it is a secondary zone.'
         created_at:
           $ref: '#/components/schemas/DateTime'
@@ -4595,9 +4636,8 @@ components:
         zone_id:
           type: string
         parent_id:
-          type:
-            - integer
-            - 'null'
+          type: integer
+          nullable: true
           description: 'If present represents the zone record this record relates to. The parent record is the master record, when the parent is updated or deleted the related record is also updated or deleted. An examle of child record is the TXT descriptive record created for an ALIAS record.'
         name:
           type: string
@@ -4606,9 +4646,8 @@ components:
         ttl:
           $ref: '#/components/schemas/TTL'
         priority:
-          type:
-            - integer
-            - 'null'
+          type: integer
+          nullable: true
           default: 0
         type:
           $ref: '#/components/schemas/ZoneRecordType'
